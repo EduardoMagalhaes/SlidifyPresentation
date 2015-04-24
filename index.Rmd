@@ -93,6 +93,7 @@ Stocks <- Stocks[as.numeric(strftime(Stocks$Date, "%d")) %in% 1 ,]
 plot(gvisMotionChart(Stocks, "Quote", "Date", options=list(width=600, height=400)))
 
 ```
+End
 
 ---
 

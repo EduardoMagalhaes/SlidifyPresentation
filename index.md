@@ -41,6 +41,7 @@ github      :
 Here you can see the Stock Closing Price and Volume for three of top world Gold producers:
 
 
+End
 
 ---
 
