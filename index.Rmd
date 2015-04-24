@@ -40,7 +40,7 @@ github      :
 
 Here you can see the Stock Closing Price and Volume for three of top world Gold producers:
 
-```{r motionchartcode, results='asis'}
+```{r motionchartcode, echo=FALSE}
 # Quandl Library allows you to use online data sets
 library(googleVis)
 library(Quandl)
