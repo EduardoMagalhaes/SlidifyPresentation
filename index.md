@@ -36,7 +36,7 @@ github      :
 ---
 
 
-## Motion chart example
+## Top 3 Historic Gold Stock Prices
 
 Here you can see the Stock Closing Price and Volume for three of top world Gold producers:
 

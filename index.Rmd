@@ -36,11 +36,11 @@ github      :
 ---
 
 
-## Motion chart example
+## Top 3 Historic Gold Stock Prices
 
 Here you can see the Stock Closing Price and Volume for three of top world Gold producers:
 
-```{r motionchartcode, echo=FALSE}
+```{r motionchartcode, echo =FALSE, results='asis'}
 # Quandl Library allows you to use online data sets
 library(googleVis)
 library(Quandl)
