@@ -1,0 +1,94 @@
+---
+title       : Gold Stock Prices Project
+subtitle    : Shiny App Presentation
+author      : Eduardo Magalhaes Barbosa
+job         : Coursera Developing Data Products Projects
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+license     : by-nc-sa
+github      :
+  user      : EduardoMagalhaes
+  repo      : SlidifyPresentation
+---
+
+
+## Disclaimer
+
+1. I am an autodidact Resultado de 25 + 25 = `r 25 + 25`
+2. What I present here works for me
+3. Read and follow the official [Google Chart API documentation](https://developers.google.com/chart/) and [Terms of Service](https://developers.google.com/readme/terms)
+4. Sometimes you have re-load this presentation for the charts and all slides to appear
+
+---
+
+## Agenda
+
+* Introduction and motivation
+* Google Chart Tools
+* R package googleVis
+  * Concepts of googleVis
+  * Case studies
+
+```{r setOptions, echo=FALSE}
+options(gvis.plot.tag="chart")
+```
+
+--- .class #id 
+
+## Motivation for googleVis
+
+* Inspired by Hans Rosling’s talks we wanted to use interactive data visualisation tools to foster the dialogue between data analysts and others
+
+* We wanted moving bubbles charts as well
+
+* The software behind Hans’ talk was bought by Google and integrated as motion charts into their Visualisation API
+
+* Ideally we wanted to use R, a language we knew
+
+* Hence, we had to create an interface between the Google Chart Tools and R
+
+--- 
+
+## Introduction to Google Chart Tools
+
+* Google Chart Tools provide a way to visualize data on web sites
+
+* The API makes it easy to create interactive charts
+
+* It uses JavaScript and DataTable / JSON as input
+
+* Output is either HTML5/SVG or Flash
+
+* Browser with internet connection required to display chart
+
+* Please read the Google [Terms of Service](https://developers.google.com/terms/) before you start
+
+---
+
+
+## Motion chart example
+
+```{r motionchartcode, results='asis'}
+library(googleVis)
+plot(gvisMotionChart(Fruits, "Fruit", "Year",
+                     options=list(width=600, height=400)))
+```
+
+---
+
+
+## Thanks
+
+* Joe Cheng for code contribution to make googleVis work with shiny
+* John Maindonald for reporting that the WorldBank demo didn't 
+    download all data, but only the first 12000 records.
+* Sebastian Campbell for reporting a typo in the Andrew and Stock
+    data set and pointing out that the core charts, such as line
+  charts accept also date variables for the x-axis. 
+* John Maindonald for providing a simplified version of the
+    WorldBank demo using the WDI package.
+* John Muschelli for suggesting to add 'hovervar' as an additional
+    argument to gvisGeoChart.
