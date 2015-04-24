@@ -51,15 +51,23 @@
     <!-- SLIDES -->
     <slide class="" id="slide-1" style="background:;">
   <hgroup>
-    <h2>Disclaimer</h2>
+    <h2>Gold and Stock Price App</h2>
   </hgroup>
   <article data-timings="">
-    <ol>
-<li>I am an autodidact Resultado de 25 + 25 = 50</li>
-<li>What I present here works for me</li>
-<li>Read and follow the official <a href="https://developers.google.com/chart/">Google Chart API documentation</a> and <a href="https://developers.google.com/readme/terms">Terms of Service</a></li>
-<li>Sometimes you have re-load this presentation for the charts and all slides to appear</li>
-</ol>
+    <ul>
+<li><p>This Shiny App will estimate the Stock Option price for a given Gold Mining Company.</p></li>
+<li><p>There will be two inputs: A date range and a A given Gold Price cost</p></li>
+</ul>
+
+<h3>How it works?</h3>
+
+<ul>
+<li><p>The app gathers data from internet sources for historic gold prices and stock closing values;</p></li>
+<li><p>For the date range supplyed, it will fitt the Stock prices in function of Gold Prices;</p></li>
+<li><p>There will be a chart for the fitting plot;</p></li>
+<li><p>Using the given Gold Target Price, the app will use the linear regression and estimate the Stock-Price;</p></li>
+<li><p>An Chart with historic Gold and Stock prices are showed for the selected date-range.</p></li>
+</ul>
 
   </article>
   <!-- Presenter Notes -->
@@ -67,36 +75,107 @@
 
 <slide class="" id="slide-2" style="background:;">
   <hgroup>
-    <h2>Agenda</h2>
+    <h2>Motion chart example</h2>
   </hgroup>
   <article data-timings="">
-    <ul>
-<li>Introduction and motivation</li>
-<li>Google Chart Tools</li>
-<li>R package googleVis
+    <p>Here you can see the Stock Closing Price and Volume for three of top world Gold producers:</p>
 
-<ul>
-<li>Concepts of googleVis</li>
-<li>Case studies</li>
-</ul></li>
-</ul>
+<pre><code class="r"># Quandl Library allows you to use online data sets
+library(googleVis)
+library(Quandl)
+</code></pre>
+
+<pre><code>## Warning: package &#39;Quandl&#39; was built under R version 3.1.3
+</code></pre>
+
+<pre><code>## Loading required package: xts
+</code></pre>
+
+<pre><code>## Warning: package &#39;xts&#39; was built under R version 3.1.3
+</code></pre>
+
+<pre><code>## Loading required package: zoo
+</code></pre>
+
+<pre><code>## Warning: package &#39;zoo&#39; was built under R version 3.1.3
+</code></pre>
+
+<pre><code>## 
+## Attaching package: &#39;zoo&#39;
+## 
+## The following objects are masked from &#39;package:base&#39;:
+## 
+##     as.Date, as.Date.numeric
+</code></pre>
+
+<pre><code class="r">Quandl.auth(&quot;o_7e9aEakBmkPksQXFZW&quot;)  ## MyPersonal Token
+
+## Read historic gold daily prices
+
+Gold &lt;- Quandl(&quot;WGC/GOLD_DAILY_USD&quot;) # Gold Price
+
+## Read historic GOld Corp Stock prices
+
+KGC &lt;- Quandl(&quot;GOOG/NYSE_KGC&quot;)  # Kinross Gold Corporation
+AUY &lt;- Quandl(&quot;GOOG/NYSE_AUY&quot;)  # Yamana GOld
+ABX &lt;- Quandl(&quot;GOOG/NYSE_ABX&quot;)  # Barick Gold Corp
+
+## Format Tables
+
+KGC$Quote &lt;- &quot;KGC&quot;
+KGC$Open &lt;- NULL
+KGC$High &lt;- NULL
+KGC$Low &lt;- NULL
+KGC &lt;- KGC[,c(4,1,2,3)]
+
+AUY$Quote &lt;- &quot;AUY&quot;
+AUY$Open &lt;- NULL
+AUY$High &lt;- NULL
+AUY$Low &lt;- NULL
+AUY &lt;- AUY[,c(4,1,2,3)]
+
+ABX$Quote &lt;- &quot;ABX&quot;
+ABX$Open &lt;- NULL
+ABX$High &lt;- NULL
+ABX$Low &lt;- NULL
+ABX &lt;- ABX[,c(4,1,2,3)]
+
+## Merge the two datasets and clean unused collumns
+
+Stocks &lt;- merge(KGC, AUY, all=TRUE)
+Stocks &lt;- merge(Stocks, ABX, all=TRUE)
+
+Stocks &lt;- Stocks[,c(1,2,4,3)]  # Resort Stocks to easy gvismotion
+
+## Select only one day per month
+
+Stocks &lt;- Stocks[as.numeric(strftime(Stocks$Date, &quot;%m&quot;)) %in% 12 ,]
+Stocks &lt;- Stocks[as.numeric(strftime(Stocks$Date, &quot;%d&quot;)) %in% 1 ,]
+
+## Plot GoogleVis Chart
+
+plot(gvisMotionChart(Stocks, &quot;Quote&quot;, &quot;Date&quot;, options=list(width=600, height=400)))
+</code></pre>
 
   </article>
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="class" id="id" style="background:;">
+<slide class="" id="slide-3" style="background:;">
   <hgroup>
-    <h2>Motivation for googleVis</h2>
+    <h2>Gold Fun Facts</h2>
   </hgroup>
   <article data-timings="">
     <ul>
-<li><p>Inspired by Hans Rosling’s talks we wanted to use interactive data visualisation tools to foster the dialogue between data analysts and others</p></li>
-<li><p>We wanted moving bubbles charts as well</p></li>
-<li><p>The software behind Hans’ talk was bought by Google and integrated as motion charts into their Visualisation API</p></li>
-<li><p>Ideally we wanted to use R, a language we knew</p></li>
-<li><p>Hence, we had to create an interface between the Google Chart Tools and R</p></li>
+<li>The last Gold closing price was 1185.8 USD/oz on 2015-04-23.</li>
+<li>Compared to other metals, gold is much softer. One can beat 1 gram of gold to a 1 square meter sheet and light would shine through that sheet.</li>
+<li>Very few chemicals can attack gold, so that’s why it keeps it shine even when buried for 1000’s of years.</li>
+<li>A total of eighty-eight thousand tons of gold have been extracted from earth ever since. This means all the gold that has been dug up so far in history would, if melted, make a cube measuring approximately 25x25x25 meters.</li>
+<li>Gold is very rare compared with diamonds.</li>
+<li>Gold is one of the heaviest metals in the world. For example, it is 19,3 times as heavy as water. One cubic meter weights some 19.300 kilogram.</li>
 </ul>
+
+<p>Source <a href="http://www.ecrresearch.com/fun-facts-about-gold">http://www.ecrresearch.com/fun-facts-about-gold</a></p>
 
   </article>
   <!-- Presenter Notes -->
@@ -104,228 +183,17 @@
 
 <slide class="" id="slide-4" style="background:;">
   <hgroup>
-    <h2>Introduction to Google Chart Tools</h2>
+    <h2>Thank You!</h2>
   </hgroup>
   <article data-timings="">
-    <ul>
-<li><p>Google Chart Tools provide a way to visualize data on web sites</p></li>
-<li><p>The API makes it easy to create interactive charts</p></li>
-<li><p>It uses JavaScript and DataTable / JSON as input</p></li>
-<li><p>Output is either HTML5/SVG or Flash</p></li>
-<li><p>Browser with internet connection required to display chart</p></li>
-<li><p>Please read the Google <a href="https://developers.google.com/terms/">Terms of Service</a> before you start</p></li>
-</ul>
+    <p>You can see the Shiny App here: </p>
 
-  </article>
-  <!-- Presenter Notes -->
-</slide>
+<p><a href="https://eduardomagalhaes.shinyapps.io/GoldStockPrices/">https://eduardomagalhaes.shinyapps.io/GoldStockPrices/</a></p>
 
-<slide class="" id="slide-5" style="background:;">
-  <hgroup>
-    <h2>Motion chart example</h2>
-  </hgroup>
-  <article data-timings="">
-    <pre><code class="r">library(googleVis)
-plot(gvisMotionChart(Fruits, &quot;Fruit&quot;, &quot;Year&quot;,
-                     options=list(width=600, height=400)))
-</code></pre>
+<p><Strong>Disclaimer</Strong></p>
 
-<!-- MotionChart generated in R 3.1.2 by googleVis 0.5.8 package -->
-
-<!-- Fri Apr 24 11:11:55 2015 -->
-
-<!-- jsHeader -->
-
-<script type="text/javascript">
- 
-// jsData 
-function gvisDataMotionChartID73cf296bb1 () {
-var data = new google.visualization.DataTable();
-var datajson =
-[
- [
- "Apples",
-2008,
-"West",
-98,
-78,
-20,
-"2008-12-31" 
-],
-[
- "Apples",
-2009,
-"West",
-111,
-79,
-32,
-"2009-12-31" 
-],
-[
- "Apples",
-2010,
-"West",
-89,
-76,
-13,
-"2010-12-31" 
-],
-[
- "Oranges",
-2008,
-"East",
-96,
-81,
-15,
-"2008-12-31" 
-],
-[
- "Bananas",
-2008,
-"East",
-85,
-76,
-9,
-"2008-12-31" 
-],
-[
- "Oranges",
-2009,
-"East",
-93,
-80,
-13,
-"2009-12-31" 
-],
-[
- "Bananas",
-2009,
-"East",
-94,
-78,
-16,
-"2009-12-31" 
-],
-[
- "Oranges",
-2010,
-"East",
-98,
-91,
-7,
-"2010-12-31" 
-],
-[
- "Bananas",
-2010,
-"East",
-81,
-71,
-10,
-"2010-12-31" 
-] 
-];
-data.addColumn('string','Fruit');
-data.addColumn('number','Year');
-data.addColumn('string','Location');
-data.addColumn('number','Sales');
-data.addColumn('number','Expenses');
-data.addColumn('number','Profit');
-data.addColumn('string','Date');
-data.addRows(datajson);
-return(data);
-}
- 
-// jsDrawChart
-function drawChartMotionChartID73cf296bb1() {
-var data = gvisDataMotionChartID73cf296bb1();
-var options = {};
-options["width"] =    600;
-options["height"] =    400;
-options["state"] = "";
-
-    var chart = new google.visualization.MotionChart(
-    document.getElementById('MotionChartID73cf296bb1')
-    );
-    chart.draw(data,options);
-    
-
-}
-  
- 
-// jsDisplayChart
-(function() {
-var pkgs = window.__gvisPackages = window.__gvisPackages || [];
-var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
-var chartid = "motionchart";
-  
-// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
-var i, newPackage = true;
-for (i = 0; newPackage && i < pkgs.length; i++) {
-if (pkgs[i] === chartid)
-newPackage = false;
-}
-if (newPackage)
-  pkgs.push(chartid);
-  
-// Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartMotionChartID73cf296bb1);
-})();
-function displayChartMotionChartID73cf296bb1() {
-  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
-  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
-  window.clearTimeout(window.__gvisLoad);
-  // The timeout is set to 100 because otherwise the container div we are
-  // targeting might not be part of the document yet
-  window.__gvisLoad = setTimeout(function() {
-  var pkgCount = pkgs.length;
-  google.load("visualization", "1", { packages:pkgs, callback: function() {
-  if (pkgCount != pkgs.length) {
-  // Race condition where another setTimeout call snuck in after us; if
-  // that call added a package, we must not shift its callback
-  return;
-}
-while (callbacks.length > 0)
-callbacks.shift()();
-} });
-}, 100);
-}
- 
-// jsFooter
-</script>
- 
-
-<!-- jsChart -->  
-
-<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartMotionChartID73cf296bb1"></script>
- 
-
-<!-- divChart -->
-
-<div id="MotionChartID73cf296bb1" 
-  style="width: 600; height: 400;">
-</div>
-
-  </article>
-  <!-- Presenter Notes -->
-</slide>
-
-<slide class="" id="slide-6" style="background:;">
-  <hgroup>
-    <h2>Thanks</h2>
-  </hgroup>
-  <article data-timings="">
-    <ul>
-<li>Joe Cheng for code contribution to make googleVis work with shiny</li>
-<li>John Maindonald for reporting that the WorldBank demo didn&#39;t 
-download all data, but only the first 12000 records.</li>
-<li>Sebastian Campbell for reporting a typo in the Andrew and Stock
-data set and pointing out that the core charts, such as line
-charts accept also date variables for the x-axis. </li>
-<li>John Maindonald for providing a simplified version of the
-WorldBank demo using the WDI package.</li>
-<li>John Muschelli for suggesting to add &#39;hovervar&#39; as an additional
-argument to gvisGeoChart.</li>
+<ul>
+<li>I would like to remind you that the data contained in this website is not necessarily real-time nor accurate. All figures (stocks, indexes, futures) and Gold prices are not provided by exchanges but rather by market makers, and so prices may not be accurate and may differ from the actual market price, meaning prices are indicative and not appropriate for trading purposes. Therefore I doesn`t bear any responsibility for any trading losses you might incur as a result of using this data .</li>
 </ul>
 
   </article>
@@ -338,38 +206,26 @@ argument to gvisGeoChart.</li>
     <ul>
       <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=1 title='Disclaimer'>
+        data-slide=1 title='Gold and Stock Price App'>
          1
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=2 title='Agenda'>
+        data-slide=2 title='Motion chart example'>
          2
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=3 title='Motivation for googleVis'>
+        data-slide=3 title='Gold Fun Facts'>
          3
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=4 title='Introduction to Google Chart Tools'>
+        data-slide=4 title='Thank You!'>
          4
-      </a>
-    </li>
-    <li>
-      <a href="#" target="_self" rel='tooltip' 
-        data-slide=5 title='Motion chart example'>
-         5
-      </a>
-    </li>
-    <li>
-      <a href="#" target="_self" rel='tooltip' 
-        data-slide=6 title='Thanks'>
-         6
       </a>
     </li>
   </ul>

@@ -15,80 +15,109 @@ github      :
 ---
 
 
-## Disclaimer
+## Gold and Stock Price App
 
-1. I am an autodidact Resultado de 25 + 25 = `r 25 + 25`
-2. What I present here works for me
-3. Read and follow the official [Google Chart API documentation](https://developers.google.com/chart/) and [Terms of Service](https://developers.google.com/readme/terms)
-4. Sometimes you have re-load this presentation for the charts and all slides to appear
+* This Shiny App will estimate the Stock Option price for a given Gold Mining Company.
 
----
+* There will be two inputs: A date range and a A given Gold Price cost
 
-## Agenda
+### How it works?
 
-* Introduction and motivation
-* Google Chart Tools
-* R package googleVis
-  * Concepts of googleVis
-  * Case studies
+* The app gathers data from internet sources for historic gold prices and stock closing values;
 
-```{r setOptions, echo=FALSE}
-options(gvis.plot.tag="chart")
-```
+* For the date range supplyed, it will fitt the Stock prices in function of Gold Prices;
 
---- .class #id 
+* There will be a chart for the fitting plot;
 
-## Motivation for googleVis
+* Using the given Gold Target Price, the app will use the linear regression and estimate the Stock-Price;
 
-* Inspired by Hans Rosling’s talks we wanted to use interactive data visualisation tools to foster the dialogue between data analysts and others
-
-* We wanted moving bubbles charts as well
-
-* The software behind Hans’ talk was bought by Google and integrated as motion charts into their Visualisation API
-
-* Ideally we wanted to use R, a language we knew
-
-* Hence, we had to create an interface between the Google Chart Tools and R
-
---- 
-
-## Introduction to Google Chart Tools
-
-* Google Chart Tools provide a way to visualize data on web sites
-
-* The API makes it easy to create interactive charts
-
-* It uses JavaScript and DataTable / JSON as input
-
-* Output is either HTML5/SVG or Flash
-
-* Browser with internet connection required to display chart
-
-* Please read the Google [Terms of Service](https://developers.google.com/terms/) before you start
+* An Chart with historic Gold and Stock prices are showed for the selected date-range.
 
 ---
 
 
 ## Motion chart example
 
+Here you can see the Stock Closing Price and Volume for three of top world Gold producers:
+
 ```{r motionchartcode, results='asis'}
+# Quandl Library allows you to use online data sets
 library(googleVis)
-plot(gvisMotionChart(Fruits, "Fruit", "Year",
-                     options=list(width=600, height=400)))
+library(Quandl)
+Quandl.auth("o_7e9aEakBmkPksQXFZW")  ## MyPersonal Token
+
+## Read historic gold daily prices
+
+Gold <- Quandl("WGC/GOLD_DAILY_USD") # Gold Price
+
+## Read historic GOld Corp Stock prices
+
+KGC <- Quandl("GOOG/NYSE_KGC")  # Kinross Gold Corporation
+AUY <- Quandl("GOOG/NYSE_AUY")  # Yamana GOld
+ABX <- Quandl("GOOG/NYSE_ABX")  # Barick Gold Corp
+
+## Format Tables
+
+KGC$Quote <- "KGC"
+KGC$Open <- NULL
+KGC$High <- NULL
+KGC$Low <- NULL
+KGC <- KGC[,c(4,1,2,3)]
+
+AUY$Quote <- "AUY"
+AUY$Open <- NULL
+AUY$High <- NULL
+AUY$Low <- NULL
+AUY <- AUY[,c(4,1,2,3)]
+
+ABX$Quote <- "ABX"
+ABX$Open <- NULL
+ABX$High <- NULL
+ABX$Low <- NULL
+ABX <- ABX[,c(4,1,2,3)]
+
+## Merge the two datasets and clean unused collumns
+
+Stocks <- merge(KGC, AUY, all=TRUE)
+Stocks <- merge(Stocks, ABX, all=TRUE)
+
+Stocks <- Stocks[,c(1,2,4,3)]  # Resort Stocks to easy gvismotion
+
+## Select only one day per month
+
+Stocks <- Stocks[as.numeric(strftime(Stocks$Date, "%m")) %in% 12 ,]
+Stocks <- Stocks[as.numeric(strftime(Stocks$Date, "%d")) %in% 1 ,]
+
+## Plot GoogleVis Chart
+
+plot(gvisMotionChart(Stocks, "Quote", "Date", options=list(width=600, height=400)))
+
 ```
 
 ---
 
+## Gold Fun Facts
 
-## Thanks
+* The last Gold closing price was `r Gold[1,2]` USD/oz on `r Gold[1,1]`.
+* Compared to other metals, gold is much softer. One can beat 1 gram of gold to a 1 square meter sheet and light would shine through that sheet.
+* Very few chemicals can attack gold, so that’s why it keeps it shine even when buried for 1000’s of years.
+* A total of eighty-eight thousand tons of gold have been extracted from earth ever since. This means all the gold that has been dug up so far in history would, if melted, make a cube measuring approximately 25x25x25 meters.
+* Gold is very rare compared with diamonds.
+* Gold is one of the heaviest metals in the world. For example, it is 19,3 times as heavy as water. One cubic meter weights some 19.300 kilogram.
 
-* Joe Cheng for code contribution to make googleVis work with shiny
-* John Maindonald for reporting that the WorldBank demo didn't 
-    download all data, but only the first 12000 records.
-* Sebastian Campbell for reporting a typo in the Andrew and Stock
-    data set and pointing out that the core charts, such as line
-  charts accept also date variables for the x-axis. 
-* John Maindonald for providing a simplified version of the
-    WorldBank demo using the WDI package.
-* John Muschelli for suggesting to add 'hovervar' as an additional
-    argument to gvisGeoChart.
+Source http://www.ecrresearch.com/fun-facts-about-gold
+
+
+---
+
+## Thank You!
+
+
+You can see the Shiny App here: 
+
+https://eduardomagalhaes.shinyapps.io/GoldStockPrices/
+
+<Strong>Disclaimer</Strong>
+
+* I would like to remind you that the data contained in this website is not necessarily real-time nor accurate. All figures (stocks, indexes, futures) and Gold prices are not provided by exchanges but rather by market makers, and so prices may not be accurate and may differ from the actual market price, meaning prices are indicative and not appropriate for trading purposes. Therefore I doesn`t bear any responsibility for any trading losses you might incur as a result of using this data .
+

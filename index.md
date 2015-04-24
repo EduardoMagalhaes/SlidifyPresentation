@@ -15,251 +15,141 @@ github      :
 ---
 
 
-## Disclaimer
+## Gold and Stock Price App
 
-1. I am an autodidact Resultado de 25 + 25 = 50
-2. What I present here works for me
-3. Read and follow the official [Google Chart API documentation](https://developers.google.com/chart/) and [Terms of Service](https://developers.google.com/readme/terms)
-4. Sometimes you have re-load this presentation for the charts and all slides to appear
+* This Shiny App will estimate the Stock Option price for a given Gold Mining Company.
 
----
+* There will be two inputs: A date range and a A given Gold Price cost
 
-## Agenda
+### How it works?
 
-* Introduction and motivation
-* Google Chart Tools
-* R package googleVis
-  * Concepts of googleVis
-  * Case studies
+* The app gathers data from internet sources for historic gold prices and stock closing values;
 
+* For the date range supplyed, it will fitt the Stock prices in function of Gold Prices;
 
+* There will be a chart for the fitting plot;
 
---- .class #id 
+* Using the given Gold Target Price, the app will use the linear regression and estimate the Stock-Price;
 
-## Motivation for googleVis
-
-* Inspired by Hans Rosling’s talks we wanted to use interactive data visualisation tools to foster the dialogue between data analysts and others
-
-* We wanted moving bubbles charts as well
-
-* The software behind Hans’ talk was bought by Google and integrated as motion charts into their Visualisation API
-
-* Ideally we wanted to use R, a language we knew
-
-* Hence, we had to create an interface between the Google Chart Tools and R
-
---- 
-
-## Introduction to Google Chart Tools
-
-* Google Chart Tools provide a way to visualize data on web sites
-
-* The API makes it easy to create interactive charts
-
-* It uses JavaScript and DataTable / JSON as input
-
-* Output is either HTML5/SVG or Flash
-
-* Browser with internet connection required to display chart
-
-* Please read the Google [Terms of Service](https://developers.google.com/terms/) before you start
+* An Chart with historic Gold and Stock prices are showed for the selected date-range.
 
 ---
 
 
 ## Motion chart example
 
+Here you can see the Stock Closing Price and Volume for three of top world Gold producers:
+
 
 ```r
+# Quandl Library allows you to use online data sets
 library(googleVis)
-plot(gvisMotionChart(Fruits, "Fruit", "Year",
-                     options=list(width=600, height=400)))
+library(Quandl)
 ```
 
-<!-- MotionChart generated in R 3.1.2 by googleVis 0.5.8 package -->
-<!-- Fri Apr 24 11:11:55 2015 -->
+```
+## Warning: package 'Quandl' was built under R version 3.1.3
+```
 
+```
+## Loading required package: xts
+```
 
-<!-- jsHeader -->
-<script type="text/javascript">
- 
-// jsData 
-function gvisDataMotionChartID73cf296bb1 () {
-var data = new google.visualization.DataTable();
-var datajson =
-[
- [
- "Apples",
-2008,
-"West",
-98,
-78,
-20,
-"2008-12-31" 
-],
-[
- "Apples",
-2009,
-"West",
-111,
-79,
-32,
-"2009-12-31" 
-],
-[
- "Apples",
-2010,
-"West",
-89,
-76,
-13,
-"2010-12-31" 
-],
-[
- "Oranges",
-2008,
-"East",
-96,
-81,
-15,
-"2008-12-31" 
-],
-[
- "Bananas",
-2008,
-"East",
-85,
-76,
-9,
-"2008-12-31" 
-],
-[
- "Oranges",
-2009,
-"East",
-93,
-80,
-13,
-"2009-12-31" 
-],
-[
- "Bananas",
-2009,
-"East",
-94,
-78,
-16,
-"2009-12-31" 
-],
-[
- "Oranges",
-2010,
-"East",
-98,
-91,
-7,
-"2010-12-31" 
-],
-[
- "Bananas",
-2010,
-"East",
-81,
-71,
-10,
-"2010-12-31" 
-] 
-];
-data.addColumn('string','Fruit');
-data.addColumn('number','Year');
-data.addColumn('string','Location');
-data.addColumn('number','Sales');
-data.addColumn('number','Expenses');
-data.addColumn('number','Profit');
-data.addColumn('string','Date');
-data.addRows(datajson);
-return(data);
-}
- 
-// jsDrawChart
-function drawChartMotionChartID73cf296bb1() {
-var data = gvisDataMotionChartID73cf296bb1();
-var options = {};
-options["width"] =    600;
-options["height"] =    400;
-options["state"] = "";
+```
+## Warning: package 'xts' was built under R version 3.1.3
+```
 
-    var chart = new google.visualization.MotionChart(
-    document.getElementById('MotionChartID73cf296bb1')
-    );
-    chart.draw(data,options);
-    
+```
+## Loading required package: zoo
+```
 
-}
-  
- 
-// jsDisplayChart
-(function() {
-var pkgs = window.__gvisPackages = window.__gvisPackages || [];
-var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
-var chartid = "motionchart";
-  
-// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
-var i, newPackage = true;
-for (i = 0; newPackage && i < pkgs.length; i++) {
-if (pkgs[i] === chartid)
-newPackage = false;
-}
-if (newPackage)
-  pkgs.push(chartid);
-  
-// Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartMotionChartID73cf296bb1);
-})();
-function displayChartMotionChartID73cf296bb1() {
-  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
-  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
-  window.clearTimeout(window.__gvisLoad);
-  // The timeout is set to 100 because otherwise the container div we are
-  // targeting might not be part of the document yet
-  window.__gvisLoad = setTimeout(function() {
-  var pkgCount = pkgs.length;
-  google.load("visualization", "1", { packages:pkgs, callback: function() {
-  if (pkgCount != pkgs.length) {
-  // Race condition where another setTimeout call snuck in after us; if
-  // that call added a package, we must not shift its callback
-  return;
-}
-while (callbacks.length > 0)
-callbacks.shift()();
-} });
-}, 100);
-}
- 
-// jsFooter
-</script>
- 
-<!-- jsChart -->  
-<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartMotionChartID73cf296bb1"></script>
- 
-<!-- divChart -->
-  
-<div id="MotionChartID73cf296bb1" 
-  style="width: 600; height: 400;">
-</div>
+```
+## Warning: package 'zoo' was built under R version 3.1.3
+```
+
+```
+## 
+## Attaching package: 'zoo'
+## 
+## The following objects are masked from 'package:base':
+## 
+##     as.Date, as.Date.numeric
+```
+
+```r
+Quandl.auth("o_7e9aEakBmkPksQXFZW")  ## MyPersonal Token
+
+## Read historic gold daily prices
+
+Gold <- Quandl("WGC/GOLD_DAILY_USD") # Gold Price
+
+## Read historic GOld Corp Stock prices
+
+KGC <- Quandl("GOOG/NYSE_KGC")  # Kinross Gold Corporation
+AUY <- Quandl("GOOG/NYSE_AUY")  # Yamana GOld
+ABX <- Quandl("GOOG/NYSE_ABX")  # Barick Gold Corp
+
+## Format Tables
+
+KGC$Quote <- "KGC"
+KGC$Open <- NULL
+KGC$High <- NULL
+KGC$Low <- NULL
+KGC <- KGC[,c(4,1,2,3)]
+
+AUY$Quote <- "AUY"
+AUY$Open <- NULL
+AUY$High <- NULL
+AUY$Low <- NULL
+AUY <- AUY[,c(4,1,2,3)]
+
+ABX$Quote <- "ABX"
+ABX$Open <- NULL
+ABX$High <- NULL
+ABX$Low <- NULL
+ABX <- ABX[,c(4,1,2,3)]
+
+## Merge the two datasets and clean unused collumns
+
+Stocks <- merge(KGC, AUY, all=TRUE)
+Stocks <- merge(Stocks, ABX, all=TRUE)
+
+Stocks <- Stocks[,c(1,2,4,3)]  # Resort Stocks to easy gvismotion
+
+## Select only one day per month
+
+Stocks <- Stocks[as.numeric(strftime(Stocks$Date, "%m")) %in% 12 ,]
+Stocks <- Stocks[as.numeric(strftime(Stocks$Date, "%d")) %in% 1 ,]
+
+## Plot GoogleVis Chart
+
+plot(gvisMotionChart(Stocks, "Quote", "Date", options=list(width=600, height=400)))
+```
 
 ---
 
+## Gold Fun Facts
 
-## Thanks
+* The last Gold closing price was 1185.8 USD/oz on 2015-04-23.
+* Compared to other metals, gold is much softer. One can beat 1 gram of gold to a 1 square meter sheet and light would shine through that sheet.
+* Very few chemicals can attack gold, so that’s why it keeps it shine even when buried for 1000’s of years.
+* A total of eighty-eight thousand tons of gold have been extracted from earth ever since. This means all the gold that has been dug up so far in history would, if melted, make a cube measuring approximately 25x25x25 meters.
+* Gold is very rare compared with diamonds.
+* Gold is one of the heaviest metals in the world. For example, it is 19,3 times as heavy as water. One cubic meter weights some 19.300 kilogram.
 
-* Joe Cheng for code contribution to make googleVis work with shiny
-* John Maindonald for reporting that the WorldBank demo didn't 
-    download all data, but only the first 12000 records.
-* Sebastian Campbell for reporting a typo in the Andrew and Stock
-    data set and pointing out that the core charts, such as line
-  charts accept also date variables for the x-axis. 
-* John Maindonald for providing a simplified version of the
-    WorldBank demo using the WDI package.
-* John Muschelli for suggesting to add 'hovervar' as an additional
-    argument to gvisGeoChart.
+Source http://www.ecrresearch.com/fun-facts-about-gold
+
+
+---
+
+## Thank You!
+
+
+You can see the Shiny App here: 
+
+https://eduardomagalhaes.shinyapps.io/GoldStockPrices/
+
+<Strong>Disclaimer</Strong>
+
+* I would like to remind you that the data contained in this website is not necessarily real-time nor accurate. All figures (stocks, indexes, futures) and Gold prices are not provided by exchanges but rather by market makers, and so prices may not be accurate and may differ from the actual market price, meaning prices are indicative and not appropriate for trading purposes. Therefore I doesn`t bear any responsibility for any trading losses you might incur as a result of using this data .
+
