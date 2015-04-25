@@ -14,7 +14,6 @@ github      :
   repo      : SlidifyPresentation
 ---
 
-
 ## Gold and Stock Price App
 
 * This Shiny App will estimate the Stock Option price for a given Gold Mining Company.
@@ -33,16 +32,24 @@ github      :
 
 * An Chart with historic Gold and Stock prices are showed for the selected date-range.
 
----
+```{r setOptions, echo=FALSE}
+options(gvis.plot.tag="chart")
+```
 
+---
 
 ## Top 3 Historic Gold Stock Prices
 
 Here you can see the Stock Closing Price and Volume for three of top world Gold producers:
 
-```{r motionchartcode, echo =FALSE, results='asis'}
-# Quandl Library allows you to use online data sets
+```{r motionchartcode,  results='asis', echo=FALSE}
+
 library(googleVis)
+#plot(gvisMotionChart(Fruits, "Fruit", "Year",
+#                     options=list(width=600, height=400)))
+
+# Quandl Library allows you to use online data sets
+
 library(Quandl)
 Quandl.auth("o_7e9aEakBmkPksQXFZW")  ## MyPersonal Token
 
@@ -93,7 +100,7 @@ Stocks <- Stocks[as.numeric(strftime(Stocks$Date, "%d")) %in% 1 ,]
 plot(gvisMotionChart(Stocks, "Quote", "Date", options=list(width=600, height=400)))
 
 ```
-End
+Try it! Hit Play button above
 
 ---
 
@@ -108,17 +115,15 @@ End
 
 Source http://www.ecrresearch.com/fun-facts-about-gold
 
-
 ---
 
 ## Thank You!
-
 
 You can see the Shiny App here: 
 
 https://eduardomagalhaes.shinyapps.io/GoldStockPrices/
 
-<Strong>Disclaimer</Strong>
+Disclaimer
 
 * I would like to remind you that the data contained in this website is not necessarily real-time nor accurate. All figures (stocks, indexes, futures) and Gold prices are not provided by exchanges but rather by market makers, and so prices may not be accurate and may differ from the actual market price, meaning prices are indicative and not appropriate for trading purposes. Therefore I doesn`t bear any responsibility for any trading losses you might incur as a result of using this data .
 
